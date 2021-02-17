@@ -30,7 +30,7 @@
 #define NUM_LEDS_SPIRALS NUM_ROWS_SPIRALS* NUM_COLS_SPIRALS  
 
 #define BRIGHTNESS          255  // for me good bright about 100-120
-#define MAX_POWER_MILLIAMPS 800  //write here your power in milliamps
+#define MAX_POWER_MILLIAMPS 800  //write here your power in milliamps. default i set 800 mA for safety
 
 CRGB leds [257];
 byte rain[NUM_LEDS_PLANAR];  //need for digital rain effect
