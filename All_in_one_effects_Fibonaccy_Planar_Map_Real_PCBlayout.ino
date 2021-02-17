@@ -76,7 +76,7 @@ void setup() {
   delay(1000); // 1 second delay for boot recovery, and a moment of silence
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, 256)
   .setCorrection( TypicalLEDStrip );
-  // FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS); //uncomment this before upload  
+  FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
 }
