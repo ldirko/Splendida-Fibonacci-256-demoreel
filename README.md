@@ -5,6 +5,8 @@ https://twitter.com/UriShaked autor
 https://www.tindie.com/products/wokwi/splendida/  buy it here 
 https://wokwi.com/ awesome arduino emulator
 
+video https://twitter.com/WokwiMakes/status/1357083953484754949?s=20 
+
 Sketch use FastLed library https://github.com/FastLED/FastLED 
 
 To make code easy sketch use lookup tables for map XY coordinates to indexes of real leds layout. 
