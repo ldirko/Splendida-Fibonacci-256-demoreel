@@ -93,7 +93,7 @@ DiagonalPattern
 }; 
 
 void loop() {
-EVERY_N_SECONDS( 20 ) // speed of change patterns periodically
+EVERY_N_SECONDS( 30 ) // speed of change patterns periodically
 {
 gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns);
 InitNeeded=1; //flag if init something need
