@@ -1,6 +1,7 @@
 # Splendia-Fibonacci-256-demoreel
 
-this code samples for Splendia Fibonacci 256 RGB leds disc from WOKWI 
+this code samples for Splendia Fibonacci 256 RGB leds disc from WOKWI
+
 https://twitter.com/UriShaked autor  
 https://www.tindie.com/products/wokwi/splendida/  buy it here 
 https://wokwi.com/ awesome arduino emulator
