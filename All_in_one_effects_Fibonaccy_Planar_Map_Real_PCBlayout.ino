@@ -13,7 +13,7 @@
 //17-02-2021 v1.1          
 //added spirals layout (resolution for spirals effects is 21x13), added effect swirl with new spirals layout. 
 //NUM_COLS and NUM_ROWS change to NUM_COLS_PLANAR, NUM_ROWS_PLANAR, added NUM_COLS_SPIRALS and NUM_ROWS_SPIRALS for spirals layout
-// add function XY_fibon_21spirals(x,y) for calculate index in leds[] for spiral layout
+//added function XY_fibon_21spirals(x,y) for calculate index in leds[] for spiral layout
 
 
 #include <FastLED.h>
