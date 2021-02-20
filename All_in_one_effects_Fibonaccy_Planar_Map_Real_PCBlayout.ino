@@ -114,7 +114,7 @@ uint16_t  a = millis()/6;
 
 for (int j = 0; j < NUM_ROWS_SPIRALS; j++) {
    for (int i = 0; i < NUM_COLS_SPIRALS; i++) {
-      byte index = XY_fibon_21spirals(i,j);
+      uint16_t index = XY_fibon_21spirals(i,j);
       leds[index].setHue(i*24+(sin8(j*16+a))>>1);  
 }}
 }
