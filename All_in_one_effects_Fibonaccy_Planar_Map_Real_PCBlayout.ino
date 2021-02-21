@@ -10,24 +10,35 @@
 //how it look in emulator https://wokwi.com/arduino/projects/290606904304992776 
 
 //15-02-2020 v1.0 initial. planarmap table and effects for this layout (resolution for planar effects is 20x20) 
+
 //17-02-2021 v1.1          
 //added spirals layout (resolution for spirals effects is 21x13), added effect swirl with new spirals layout. 
 //NUM_COLS and NUM_ROWS change to NUM_COLS_PLANAR, NUM_ROWS_PLANAR, added NUM_COLS_SPIRALS and NUM_ROWS_SPIRALS for spirals layout
 //added function XY_fibon_21spirals(x,y) for calculate index in leds[] for spiral layout
 
+//21-02-2021 v1.2
+//added cilindrical layout (resolution for cilindrical effects is 11x45)
+//for code this effects use NUM_ROWS_CILINDR and NUM_COLS_CILINDR   
+//added effects for this cilindrical map: 
+//Fire2021_Cilindrical, CilindricalSwirl, RGB_Caleidoscope1, RGB_Caleidoscope2, 
+//Fire_Tunnel, Cilindrical_Pattern, DiagonalPatternCilindr, FireButterfly  
+//added function XY_fibon_cilindr(x,y) for calculate index in leds[] for cilindrical layout
 
 #include <FastLED.h>
 
-#define DATA_PIN    3
-#define LED_TYPE    WS2812B
-#define COLOR_ORDER GRB
+#define DATA_PIN    3                //set your datapin
+#define LED_TYPE    WS2812B          //leds type
+#define COLOR_ORDER GRB              //color order of leds
 
 #define NUM_COLS_PLANAR 20            // resolution for planar lookup table
 #define NUM_ROWS_PLANAR 20            // resolution for planar lookup table
 #define NUM_COLS_SPIRALS 21           // resolution for spirals lookup table
 #define NUM_ROWS_SPIRALS 13           // resolution for spirals lookup table
+#define NUM_ROWS_CILINDR 11           // resolution for cinindrical lookup table
+#define NUM_COLS_CILINDR 45           // resolution for cilindrical lookup table
 #define NUM_LEDS_PLANAR  NUM_ROWS_PLANAR * NUM_COLS_PLANAR 
-#define NUM_LEDS_SPIRALS NUM_ROWS_SPIRALS* NUM_COLS_SPIRALS  
+#define NUM_LEDS_SPIRALS NUM_ROWS_SPIRALS* NUM_COLS_SPIRALS  //not used yet. in future
+#define NUM_LEDS_CILINDR NUM_ROWS_CILINDR* NUM_COLS_CILINDR //not used yet. in future
 
 #define BRIGHTNESS          255  // for me good bright about 100-120
 #define MAX_POWER_MILLIAMPS 800  //write here your power in milliamps. default i set 800 mA for safety
@@ -68,6 +79,20 @@ static const uint16_t Fibon21Spirals[] PROGMEM ={    //lookup table for spirals 
 0, 256, 256, 256, 49, 256, 256, 256, 98, 256, 256, 146, 256, 256, 171, 256, 195, 256, 256, 256, 256
 };  
 
+static const uint16_t FibonCilindrMap[] PROGMEM ={    //lookup table for cilindrical mapping on fibonacci layout
+85, 256, 256, 86, 256, 110, 256, 111, 256, 134, 256, 135, 256, 158, 256, 256, 159, 182, 256, 256, 183, 256, 207, 256, 208, 256, 231, 256, 232, 256, 255, 256, 256, 12, 13, 256, 256, 36, 256, 38, 37, 61, 256, 256, 62,
+256, 88, 87, 108, 109, 256, 112, 132, 133, 256, 136, 156, 157, 256, 161, 160, 181, 256, 185, 184, 205, 206, 256, 209, 229, 230, 256, 233, 256, 254, 256, 10, 11, 14, 256, 34, 35, 256, 39, 256, 60, 256, 64, 63, 84,
+89, 106, 107, 256, 114, 113, 131, 256, 138, 137, 155, 256, 163, 162, 179, 180, 256, 186, 203, 204, 256, 211, 210, 228, 256, 235, 234, 252, 253, 256, 9, 16, 15, 256, 33, 256, 41, 40, 58, 59, 256, 65, 82, 83, 256,
+105, 256, 116, 115, 129, 130, 256, 139, 256, 154, 256, 164, 256, 178, 256, 188, 187, 202, 256, 256, 212, 226, 227, 256, 236, 256, 251, 256, 7, 8, 17, 256, 256, 32, 256, 42, 256, 57, 256, 67, 66, 81, 256, 91, 90,
+256, 117, 256, 128, 256, 256, 140, 152, 153, 256, 165, 256, 177, 256, 189, 256, 201, 256, 214, 213, 225, 256, 256, 237, 249, 250, 256, 6, 256, 18, 256, 30, 31, 256, 43, 256, 56, 256, 68, 256, 80, 256, 92, 256, 104,
+118, 256, 127, 256, 256, 141, 151, 256, 256, 166, 256, 176, 256, 190, 256, 200, 256, 215, 256, 224, 256, 256, 238, 248, 256, 256, 5, 256, 19, 256, 29, 256, 256, 44, 256, 55, 256, 69, 256, 79, 256, 93, 256, 103, 256,
+256, 126, 256, 256, 142, 150, 256, 256, 167, 256, 175, 256, 191, 256, 199, 256, 216, 256, 223, 256, 256, 239, 247, 256, 256, 4, 256, 20, 256, 28, 256, 256, 45, 256, 54, 256, 70, 256, 78, 256, 94, 256, 102, 256, 119,
+125, 256, 256, 143, 149, 256, 256, 168, 256, 174, 256, 192, 256, 198, 256, 217, 256, 222, 256, 256, 240, 246, 256, 256, 3, 256, 21, 256, 27, 256, 256, 46, 256, 53, 256, 71, 256, 77, 256, 95, 256, 101, 256, 120, 256,
+256, 256, 144, 148, 256, 256, 169, 256, 173, 256, 193, 256, 197, 256, 218, 256, 221, 256, 256, 241, 245, 256, 256, 2, 256, 22, 256, 26, 256, 256, 47, 256, 52, 256, 72, 256, 76, 256, 96, 256, 100, 256, 121, 256, 124,
+256, 145, 147, 256, 256, 170, 256, 172, 256, 194, 256, 196, 256, 219, 256, 220, 256, 256, 242, 244, 256, 256, 1, 256, 23, 256, 25, 256, 256, 48, 256, 51, 256, 73, 256, 75, 256, 97, 256, 99, 256, 122, 256, 123, 256,
+146, 256, 256, 256, 256, 256, 171, 256, 256, 256, 195, 256, 256, 256, 256, 256, 256, 243, 256, 256, 256, 0, 256, 24, 256, 256, 256, 256, 49, 256, 50, 256, 256, 256, 74, 256, 256, 256, 98, 256, 256, 256, 256, 256, 256,
+};  
+
 
 uint8_t gCurrentPatternNumber =0; // Index number of which pattern is current
 uint8_t InitNeeded = 1;           //global variable for effects initial needed
@@ -76,7 +101,7 @@ void setup() {
   delay(1000); // 1 second delay for boot recovery, and a moment of silence
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, 256)
   .setCorrection( TypicalLEDStrip );
-  FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
+  // FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
 }
@@ -85,15 +110,17 @@ void setup() {
 // List of patterns to cycle through.  Each is defined as a separate function below.
 typedef void (*SimplePatternList[])();
 SimplePatternList gPatterns =     // this is list of patterns
-{    
+{
+Fire2021_Cilindrical, CilindricalSwirl, RGB_Caleidoscope2, RGB_Caleidoscope1,
+Fire_Tunnel, Cilindrical_Pattern, DiagonalPatternCilindr, FireButterfly,     
 Spirals_Swirl,
-fire2021,RGBTunnel,metaballs,
-DigitalRain,SinPattern,F_lying,
+fire2021, RGBTunnel, metaballs,
+DigitalRain, SinPattern, F_lying,
 DiagonalPattern
 }; 
 
 void loop() {
-EVERY_N_SECONDS( 30 ) // speed of change patterns periodically
+EVERY_N_SECONDS( 20 ) // speed of change patterns periodically
 {
 gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns);
 InitNeeded=1; //flag if init something need
@@ -104,7 +131,107 @@ gPatterns[gCurrentPatternNumber]();
 FastLED.show();  
 } // main cycle
 
-//_____________________________________ effects
+//_____________________________________ effects for cilindrical layout
+
+//CilindricalSwirl_____________________________________
+
+void CilindricalSwirl() {
+uint16_t  a = millis()/4;
+
+for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
+   for (int i = 0; i < NUM_COLS_CILINDR; i++) {
+      uint16_t index = XY_fibon_cilindr(i,j);
+if (index!=256) leds[index].setHue(i*24+(sin8(j*16+a))>>1); 
+}}
+}
+
+//FireButterfly_____________________________________
+
+void FireButterfly() {
+uint16_t  a = millis()/2;
+
+for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
+   for (int i = 0; i < NUM_COLS_CILINDR; i++) {
+      uint16_t index = XY_fibon_cilindr(i,j);
+if (index!=256) leds[index]=HeatColor(qsub8 (inoise8 (i * 80+a , j * 5+ a , a /3), abs8(j - (NUM_ROWS_CILINDR-1)) * 255 / (NUM_ROWS_CILINDR+3)));
+}}
+}
+
+//DiagonalPatternCilindr_____________________________________
+
+void DiagonalPatternCilindr() {
+uint16_t  a = millis()/4;
+
+for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
+   for (int i = 0; i < NUM_COLS_CILINDR; i++) {
+      uint16_t index = XY_fibon_cilindr(i,j);
+if (index!=256) leds[index].setHue (i*16+j*16+a);
+}}
+}
+
+//Fire2021_Cilindrical_____________________________________
+
+void Fire2021_Cilindrical() {
+uint16_t  a = millis()/2;
+
+for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
+   for (int i = 0; i < NUM_COLS_CILINDR; i++) {
+      uint16_t index = XY_fibon_cilindr(i,j);
+if (index!=256) leds[index]= HeatColor(qsub8 (inoise8 (i * 80 , j * 40+ a , a /3), abs8(j - (NUM_ROWS_CILINDR-1)) * 255 / (NUM_ROWS_CILINDR+4)));
+}}
+}
+
+//Cilindrical_Pattern_____________________________________
+
+void Cilindrical_Pattern() {
+uint16_t  a = millis()/10;
+
+for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
+   for (int i = 0; i < NUM_COLS_CILINDR; i++) {
+      uint16_t index = XY_fibon_cilindr(i,j);
+if (index!=256) leds[index].setHue ((sin8((i<<4)+a)>>1)+(sin8((j<<4)+a))>>1);
+}}
+}
+
+//Fire_Tunnel_____________________________________
+
+void Fire_Tunnel() {
+uint16_t  a = millis()/2;
+
+for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
+   for (int i = 0; i < NUM_COLS_CILINDR; i++) {
+      uint16_t index = XY_fibon_cilindr(i,j);
+if (index!=256) leds[index]= HeatColor(inoise8(i*50+a,j*40+a));
+}}
+}
+
+//RGB_Caleidoscope1_____________________________________
+
+void RGB_Caleidoscope1() {
+uint16_t  a = millis()/8;
+
+for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
+   for (int i = 0; i < NUM_COLS_CILINDR; i++) {
+      uint16_t index = XY_fibon_cilindr(i,j);
+if (index!=256) 
+leds[index].setRGB( (sin8(i*16+a)+cos8(j*16+a/2))/2, sin8(j*16+a/2+sin8(leds[index].r+a)/16), cos8(i*16+j*16-a/2+leds[index].g));
+}}
+}
+
+//RGB_Caleidoscope2_____________________________________
+
+void RGB_Caleidoscope2() {
+uint16_t  a = millis()/8;
+
+for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
+   for (int i = 0; i < NUM_COLS_CILINDR; i++) {
+      uint16_t index = XY_fibon_cilindr(i,j);
+if (index!=256)
+leds[index].setRGB((sin8(i*32+a)+cos8(j*32+a))>>1,(sin8(i*32-a)+cos8(j*32+a>>1))>>1,sin8(j*16+a));
+}}
+}
+
+//_____________________________________ effects for spirals layout
 
 //Spirals_Swirl_____________________________________
 
@@ -118,6 +245,8 @@ for (int j = 0; j < NUM_ROWS_SPIRALS; j++) {
       leds[index].setHue(i*24+(sin8(j*16+a))>>1);  
 }}
 }
+
+//_____________________________________ effects for planar layout
 
 //fire2021_____________________________________
 
@@ -305,5 +434,10 @@ return (ledsindex);
 
 uint16_t XY_fibon_21spirals(byte x, byte y) {   // calculate index in leds from XY coordinates for spirals mapping
 uint16_t ledsindex = pgm_read_word (Fibon21Spirals+y*NUM_COLS_SPIRALS+x);
+return (ledsindex);
+}
+
+uint16_t XY_fibon_cilindr(byte x, byte y) {     // calculate index in leds from XY coordinates for cilindrical mapping
+uint16_t ledsindex = pgm_read_word (FibonCilindrMap+y*NUM_COLS_CILINDR+x);
 return (ledsindex);
 }
