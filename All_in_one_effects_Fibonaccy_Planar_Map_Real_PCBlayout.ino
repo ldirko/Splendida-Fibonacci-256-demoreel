@@ -5,11 +5,12 @@
 //https://www.reddit.com/user/ldirko/
 //https://twitter.com/ldir_ko
 
-//this sketch tested on real Splendia 256 from https://twitter.com/WokwiMakes with ESP Wemos D1 mini 
+//this sketch tested on real Splendia 256 from https://twitter.com/WokwiMakes with ESP Wemos D1 mini, 
+//sketch already for upload, set your data pin, brightness and power in mA and upload via Arduino IDE   
 
 //how it look in emulator https://wokwi.com/arduino/projects/290606904304992776 
 
-//15-02-2020 v1.0 initial. planarmap table and effects for this layout (resolution for planar effects is 20x20) 
+//15-02-2020 v1.0 initial. planar map table and effects for this layout (resolution for planar effects is 20x20) 
 
 //17-02-2021 v1.1          
 //added spirals layout (resolution for spirals effects is 21x13), added effect swirl with new spirals layout. 
@@ -40,7 +41,7 @@
 #define NUM_LEDS_SPIRALS NUM_ROWS_SPIRALS* NUM_COLS_SPIRALS  //not used yet. in future
 #define NUM_LEDS_CILINDR NUM_ROWS_CILINDR* NUM_COLS_CILINDR //not used yet. in future
 
-#define BRIGHTNESS          255  // for me good bright about 100-120
+#define BRIGHTNESS          120  // for me good bright about 100-120. MAX BRIGHT is 255!
 #define MAX_POWER_MILLIAMPS 800  //write here your power in milliamps. default i set 800 mA for safety
 
 CRGB leds [257];
@@ -98,10 +99,9 @@ uint8_t gCurrentPatternNumber =0; // Index number of which pattern is current
 uint8_t InitNeeded = 1;           //global variable for effects initial needed
 
 void setup() {
-  delay(1000); // 1 second delay for boot recovery, and a moment of silence
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, 256)
   .setCorrection( TypicalLEDStrip );
-  // FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
+  FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
 }
