@@ -425,7 +425,7 @@ if (ledsindex!=256) leds[ledsindex].setHue(i*8+j*8+ms/16); // with palette
 }}
 }
 
-//sistem procedures_____________________________________
+//system procedures_____________________________________
 
 uint16_t XY_fibon(byte x, byte y) {             // calculate index in leds from XY coordinates for planar mapping
 uint16_t ledsindex = pgm_read_word (FibonPlanarTable+y*NUM_COLS_PLANAR+x);
