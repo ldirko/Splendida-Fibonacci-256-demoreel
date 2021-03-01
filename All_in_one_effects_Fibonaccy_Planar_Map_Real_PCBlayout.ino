@@ -146,20 +146,20 @@ DiagonalPattern
 void loop() {
 EVERY_N_SECONDS( 20 ) // speed of change patterns periodically
 {
-#define speedFade 3   //speed of fade effect 
-for (int i=0; i<255; i+=speedFade){   //fade out current effect
+#define speedFade 10   //speed of fade effect 
+for (byte i=0; i<254; i+=1){   //fade out current effect
 gPatterns[gCurrentPatternNumber]();
 fadeToBlackBy(leds,256,i);
-FastLED.show();  
+FastLED.delay(speedFade);  
 }   
 
 gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns); //next effect
 InitNeeded=1; //flag if init something need
 
-for (int i=255; i>=0; i-=speedFade){   //fade in next effect
+for (byte i=254; i>0; i-=1){   //fade in next effect
 gPatterns[gCurrentPatternNumber]();
 fadeToBlackBy(leds,256,i);
-FastLED.show();  
+FastLED.delay(speedFade);
 }   
 } 
 
