@@ -146,7 +146,7 @@ DiagonalPattern
 void loop() {
 EVERY_N_SECONDS( 30 ) // speed of change patterns periodically
 {
-#define speedFade 15   //speed of fade effect 
+#define speedFade 20   //speed of fade effect 
 for (int i=BRIGHTNESS; i>0; i--){   //fade out current effect
 gPatterns[gCurrentPatternNumber]();
 //fadeToBlackBy(leds,256,i);
@@ -162,7 +162,7 @@ gPatterns[gCurrentPatternNumber]();
 //fadeToBlackBy(leds,256,i);
 FastLED.setBrightness(i);
 
-FastLED.delay(speedFade+10);
+FastLED.delay(speedFade+20);
 }   
 } 
 
