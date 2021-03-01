@@ -5,12 +5,11 @@
 //https://www.reddit.com/user/ldirko/
 //https://twitter.com/ldir_ko
 
-//this sketch tested on real Splendia 256 from https://twitter.com/WokwiMakes with ESP Wemos D1 mini, 
-//sketch already for upload, set your data pin, brightness and power in mA and upload via Arduino IDE   
+//this sketch tested on real Splendia 256 from https://twitter.com/WokwiMakes with ESP Wemos D1 mini 
 
 //how it look in emulator https://wokwi.com/arduino/projects/290606904304992776 
 
-//15-02-2020 v1.0 initial. planar map table and effects for this layout (resolution for planar effects is 20x20) 
+//15-02-2020 v1.0 initial. planarmap table and effects for this layout (resolution for planar effects is 20x20) 
 
 //17-02-2021 v1.1          
 //added spirals layout (resolution for spirals effects is 21x13), added effect swirl with new spirals layout. 
@@ -24,6 +23,15 @@
 //Fire2021_Cilindrical, CilindricalSwirl, RGB_Caleidoscope1, RGB_Caleidoscope2, 
 //Fire_Tunnel, Cilindrical_Pattern, DiagonalPatternCilindr, FireButterfly  
 //added function XY_fibon_cilindr(x,y) for calculate index in leds[] for cilindrical layout
+
+//01-03-2021 v1.3 
+//added fadein/out beetween effects
+//added gamma correction table and gamma correction procedure. 
+//it need for effect like RGB_Caleidoscope1 for contrast looking in real leds, 
+//now its added for effects RGB_Caleidoscope1, RGB_Caleidoscope1, Cilindrical_Pattern
+ 
+
+//actually vesion of demoreel on github https://github.com/ldirko/Splendida-Fibonacci-256-demoreel and copied here
 
 #include <FastLED.h>
 
@@ -41,7 +49,7 @@
 #define NUM_LEDS_SPIRALS NUM_ROWS_SPIRALS* NUM_COLS_SPIRALS  //not used yet. in future
 #define NUM_LEDS_CILINDR NUM_ROWS_CILINDR* NUM_COLS_CILINDR //not used yet. in future
 
-#define BRIGHTNESS          120  // for me good bright about 100-120. MAX BRIGHT is 255!
+#define BRIGHTNESS          255  // for me good bright about 100-120, don't turn leds in full brightness long time! it may overheat
 #define MAX_POWER_MILLIAMPS 800  //write here your power in milliamps. default i set 800 mA for safety
 
 CRGB leds [257];
@@ -94,6 +102,25 @@ static const uint16_t FibonCilindrMap[] PROGMEM ={    //lookup table for cilindr
 146, 256, 256, 256, 256, 256, 171, 256, 256, 256, 195, 256, 256, 256, 256, 256, 256, 243, 256, 256, 256, 0, 256, 24, 256, 256, 256, 256, 49, 256, 50, 256, 256, 256, 74, 256, 256, 256, 98, 256, 256, 256, 256, 256, 256,
 };  
 
+static const uint8_t exp_gamma[256] PROGMEM = {
+0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   1,   1,   1,
+1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,
+1,   2,   2,   2,   2,   2,   2,   2,   2,   2,   3,   3,   3,   3,   3,
+4,   4,   4,   4,   4,   5,   5,   5,   5,   5,   6,   6,   6,   7,   7,
+7,   7,   8,   8,   8,   9,   9,   9,   10,  10,  10,  11,  11,  12,  12,
+12,  13,  13,  14,  14,  14,  15,  15,  16,  16,  17,  17,  18,  18,  19,
+19,  20,  20,  21,  21,  22,  23,  23,  24,  24,  25,  26,  26,  27,  28,
+28,  29,  30,  30,  31,  32,  32,  33,  34,  35,  35,  36,  37,  38,  39,
+39,  40,  41,  42,  43,  44,  44,  45,  46,  47,  48,  49,  50,  51,  52,
+53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,
+68,  70,  71,  72,  73,  74,  75,  77,  78,  79,  80,  82,  83,  84,  85,
+87,  89,  91,  92,  93,  95,  96,  98,  99,  100, 101, 102, 105, 106, 108,
+109, 111, 112, 114, 115, 117, 118, 120, 121, 123, 125, 126, 128, 130, 131,
+133, 135, 136, 138, 140, 142, 143, 145, 147, 149, 151, 152, 154, 156, 158,
+160, 162, 164, 165, 167, 169, 171, 173, 175, 177, 179, 181, 183, 185, 187,
+190, 192, 194, 196, 198, 200, 202, 204, 207, 209, 211, 213, 216, 218, 220,
+222, 225, 227, 229, 232, 234, 236, 239, 241, 244, 246, 249, 251, 253, 254,
+255};
 
 uint8_t gCurrentPatternNumber =0; // Index number of which pattern is current
 uint8_t InitNeeded = 1;           //global variable for effects initial needed
@@ -101,7 +128,7 @@ uint8_t InitNeeded = 1;           //global variable for effects initial needed
 void setup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, 256)
   .setCorrection( TypicalLEDStrip );
-  FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
+  // FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
 }
@@ -122,8 +149,21 @@ DiagonalPattern
 void loop() {
 EVERY_N_SECONDS( 20 ) // speed of change patterns periodically
 {
-gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns);
+#define speedFade 3   //speed of fade effect 
+for (int i=0; i<255; i+=speedFade){   //fade out current effect
+gPatterns[gCurrentPatternNumber]();
+fadeToBlackBy(leds,256,i);
+FastLED.show();  
+}   
+
+gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns); //next effect
 InitNeeded=1; //flag if init something need
+
+for (int i=255; i>=0; i-=speedFade){   //fade in next effect
+gPatterns[gCurrentPatternNumber]();
+fadeToBlackBy(leds,256,i);
+FastLED.show();  
+}   
 } 
 
 gPatterns[gCurrentPatternNumber]();
@@ -191,6 +231,7 @@ for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
       uint16_t index = XY_fibon_cilindr(i,j);
 if (index!=256) leds[index].setHue ((sin8((i<<4)+a)>>1)+(sin8((j<<4)+a))>>1);
 }}
+GammaCorrection();
 }
 
 //Fire_Tunnel_____________________________________
@@ -216,6 +257,7 @@ for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
 if (index!=256) 
 leds[index].setRGB( (sin8(i*16+a)+cos8(j*16+a/2))/2, sin8(j*16+a/2+sin8(leds[index].r+a)/16), cos8(i*16+j*16-a/2+leds[index].g));
 }}
+GammaCorrection();
 }
 
 //RGB_Caleidoscope2_____________________________________
@@ -229,6 +271,7 @@ for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
 if (index!=256)
 leds[index].setRGB((sin8(i*32+a)+cos8(j*32+a))>>1,(sin8(i*32-a)+cos8(j*32+a>>1))>>1,sin8(j*16+a));
 }}
+GammaCorrection();
 }
 
 //_____________________________________ effects for spirals layout
@@ -440,4 +483,16 @@ return (ledsindex);
 uint16_t XY_fibon_cilindr(byte x, byte y) {     // calculate index in leds from XY coordinates for cilindrical mapping
 uint16_t ledsindex = pgm_read_word (FibonCilindrMap+y*NUM_COLS_CILINDR+x);
 return (ledsindex);
+}
+
+void GammaCorrection(){   //gamma correction function 
+byte r,g,b;
+for (uint16_t i=0; i<256; i++){
+r=leds[i].r;
+g=leds[i].g;
+b=leds[i].b;
+leds[i].r = pgm_read_byte(exp_gamma + r);
+leds[i].g = pgm_read_byte(exp_gamma + g);
+leds[i].b = pgm_read_byte(exp_gamma + b);
+}
 }
