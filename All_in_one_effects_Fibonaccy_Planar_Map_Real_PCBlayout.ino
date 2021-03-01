@@ -147,18 +147,21 @@ void loop() {
 EVERY_N_SECONDS( 20 ) // speed of change patterns periodically
 {
 #define speedFade 10   //speed of fade effect 
-for (int i=0; i<256; i++){   //fade out current effect
+for (int i=BRIGHTNESS; i>0; i--){   //fade out current effect
 gPatterns[gCurrentPatternNumber]();
-fadeToBlackBy(leds,256,i);
+//fadeToBlackBy(leds,256,i);
+FastLED.setBrightness(i);
 FastLED.delay(speedFade-5);  
 }   
 
 gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns); //next effect
 InitNeeded=1; //flag if init something need
 
-for (int i=255; i>0; i--){   //fade in next effect
+for (int i=0; i<BRIGHTNESS; i++){   //fade in next effect
 gPatterns[gCurrentPatternNumber]();
-fadeToBlackBy(leds,256,i);
+//fadeToBlackBy(leds,256,i);
+FastLED.setBrightness(i);
+
 FastLED.delay(speedFade+10);
 }   
 } 
