@@ -28,10 +28,7 @@
 //added fadein/out beetween effects
 //added gamma correction table and gamma correction procedure. 
 //it need for effect like RGB_Caleidoscope1 for contrast looking in real leds, 
-//now its added for effects RGB_Caleidoscope1, RGB_Caleidoscope1, Cilindrical_Pattern
- 
-
-//actually vesion of demoreel on github https://github.com/ldirko/Splendida-Fibonacci-256-demoreel and copied here
+//now gamma correction added for effects RGB_Caleidoscope1, RGB_Caleidoscope1 and Cilindrical_Pattern
 
 #include <FastLED.h>
 
@@ -49,7 +46,7 @@
 #define NUM_LEDS_SPIRALS NUM_ROWS_SPIRALS* NUM_COLS_SPIRALS  //not used yet. in future
 #define NUM_LEDS_CILINDR NUM_ROWS_CILINDR* NUM_COLS_CILINDR //not used yet. in future
 
-#define BRIGHTNESS          255  // for me good bright about 100-120, don't turn leds in full brightness long time! it may overheat
+#define BRIGHTNESS          110  // for me good bright about 100-120, don't turn leds in full brightness long time! it may overheat
 #define MAX_POWER_MILLIAMPS 800  //write here your power in milliamps. default i set 800 mA for safety
 
 CRGB leds [257];
@@ -128,7 +125,7 @@ uint8_t InitNeeded = 1;           //global variable for effects initial needed
 void setup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, 256)
   .setCorrection( TypicalLEDStrip );
-  // FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
+  FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
 }
