@@ -46,7 +46,6 @@
 #define NUM_LEDS_SPIRALS NUM_ROWS_SPIRALS* NUM_COLS_SPIRALS  //not used yet. in future
 #define NUM_LEDS_CILINDR NUM_ROWS_CILINDR* NUM_COLS_CILINDR //not used yet. in future
 
-#define BRIGHTNESS          110  // for me good bright about 100-120, don't turn leds in full brightness long time! it may overheat
 #define MAX_POWER_MILLIAMPS 800  //write here your power in milliamps. default i set 800 mA for safety
 
 CRGB leds [257];
@@ -121,6 +120,8 @@ static const uint8_t exp_gamma[256] PROGMEM = {
 
 uint8_t gCurrentPatternNumber =0; // Index number of which pattern is current
 uint8_t InitNeeded = 1;           //global variable for effects initial needed
+byte BRIGHTNESS = 110;      // for me good bright about 100-120, don't turn leds in full brightness long time! it may overheat
+
 
 void setup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, 256)
