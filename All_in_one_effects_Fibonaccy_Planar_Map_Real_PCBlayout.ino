@@ -500,5 +500,4 @@ gPatterns[gCurrentPatternNumber]();
 FastLED.setBrightness(fadeOut);
 FastLED.show();  
 }
-Serial.println(fadeOut);
 }
