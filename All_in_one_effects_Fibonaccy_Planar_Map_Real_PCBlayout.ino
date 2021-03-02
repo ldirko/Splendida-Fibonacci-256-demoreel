@@ -146,26 +146,11 @@ DiagonalPattern
 void loop() {
 EVERY_N_SECONDS( 30 ) // speed of change patterns periodically
 {
-#define speedFade 20   //speed of fade effect 
-for (int i=BRIGHTNESS; i>0; i--){   //fade out current effect
-gPatterns[gCurrentPatternNumber]();
-//fadeToBlackBy(leds,256,i);
-FastLED.setBrightness(i);
-FastLED.delay(speedFade-5);  
-}   
-
+FadeOut (15);        //fade out current effect
 gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns); //next effect
 InitNeeded=1; //flag if init something need
-
-for (int i=0; i<BRIGHTNESS; i++){   //fade in next effect
-gPatterns[gCurrentPatternNumber]();
-//fadeToBlackBy(leds,256,i);
-FastLED.setBrightness(i);
-
-FastLED.delay(speedFade+20);
-}   
+FadeIn (40);        ////fade in current effect
 } 
-
 
 gPatterns[gCurrentPatternNumber]();
 
@@ -495,5 +480,21 @@ b=leds[i].b;
 leds[i].r = pgm_read_byte(exp_gamma + r);
 leds[i].g = pgm_read_byte(exp_gamma + g);
 leds[i].b = pgm_read_byte(exp_gamma + b);
+}
+}
+
+void FadeOut (byte speedFadeOut){
+for (int i=BRIGHTNESS; i>0; i--){   //fade out current effect
+gPatterns[gCurrentPatternNumber]();
+FastLED.setBrightness(i);
+FastLED.delay(speedFadeOut);  
+}
+}
+
+void FadeIn (byte speedFadeIn){
+for (int i=0; i<BRIGHTNESS; i++){   //fade in next effect
+gPatterns[gCurrentPatternNumber]();
+FastLED.setBrightness(i);
+FastLED.delay(speedFadeIn);
 }
 }
