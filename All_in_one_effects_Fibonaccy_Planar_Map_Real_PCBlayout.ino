@@ -488,16 +488,18 @@ for (byte i=0; i<=steps; i++) {
 gPatterns[gCurrentPatternNumber]();
 byte fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
 FastLED.setBrightness(fadeOut);
+Serial.println(fadeOut);
 FastLED.show();  
 }
 }
 
 void FadeIn (byte steps){
 byte fadeOut;
-for (int16_t i=steps; i>=0; i--) {
+for (byte i=steps+1; i--; i>=0) {
 gPatterns[gCurrentPatternNumber]();
  fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
 FastLED.setBrightness(fadeOut);
+Serial.println(fadeOut);
 FastLED.show();  
 }
 }
