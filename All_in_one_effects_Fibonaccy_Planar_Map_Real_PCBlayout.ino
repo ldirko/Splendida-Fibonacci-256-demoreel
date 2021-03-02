@@ -146,10 +146,10 @@ DiagonalPattern
 void loop() {
 EVERY_N_SECONDS( 30 ) // speed of change patterns periodically
 {
-FadeOut (15);        //fade out current effect
+FadeOut (50);        // fade out current effect
 gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns); //next effect
 InitNeeded=1; //flag if init something need
-FadeIn (40);        ////fade in current effect
+FadeIn (50);        // fade in current effect
 } 
 
 gPatterns[gCurrentPatternNumber]();
@@ -483,18 +483,22 @@ leds[i].b = pgm_read_byte(exp_gamma + b);
 }
 }
 
-void FadeOut (byte speedFadeOut){
-for (int i=BRIGHTNESS; i>0; i--){   //fade out current effect
+void FadeOut (byte steps){
+for (byte i=0; i<=steps; i++) {
 gPatterns[gCurrentPatternNumber]();
-FastLED.setBrightness(i);
-FastLED.delay(speedFadeOut);  
+byte fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
+FastLED.setBrightness(fadeOut);
+FastLED.show();  
 }
 }
 
-void FadeIn (byte speedFadeIn){
-for (int i=0; i<BRIGHTNESS; i++){   //fade in next effect
+void FadeIn (byte steps){
+byte fadeOut;
+for (int16_t i=steps; i>=0; i--) {
 gPatterns[gCurrentPatternNumber]();
-FastLED.setBrightness(i);
-FastLED.delay(speedFadeIn);
+ fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
+FastLED.setBrightness(fadeOut);
+FastLED.show();  
 }
+Serial.println(fadeOut);
 }
