@@ -15,6 +15,6 @@ To make code easy sketch use lookup tables for map XY coordinates to indexes of 
 
 For more easy and speed code work you have emulator page https://wokwi.com/arduino/projects/290606904304992776 try it!
 
-3d model for diffuser https://www.thingiverse.com/thing:4791860  video with diffuser https://www.youtube.com/watch?v=z7WzxNb83nA
+3d model for shell with diffusers https://www.thingiverse.com/thing:4791860  video with diffuser https://www.youtube.com/watch?v=z7WzxNb83nA
 
 thanks to UriShaked for present me one Splendida )
