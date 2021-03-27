@@ -2,6 +2,8 @@
 
 this code samples for Splendida Fibonacci 256 RGB leds disc from WOKWI
 
+Splendida github with PCB https://github.com/wokwi/splendida  
+
 https://twitter.com/UriShaked autor  
 https://www.tindie.com/products/wokwi/splendida/  buy it here
 
