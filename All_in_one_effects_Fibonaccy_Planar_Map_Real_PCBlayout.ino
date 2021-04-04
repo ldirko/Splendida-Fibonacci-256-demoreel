@@ -147,10 +147,10 @@ DiagonalPattern
 void loop() {
 EVERY_N_SECONDS( 30 ) // speed of change patterns periodically
 {
-FadeOut (50);        // fade out current effect
+FadeOut (150);        // fade out current effect
 gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns); //next effect
 InitNeeded=1; //flag if init something need
-FadeIn (50);        // fade in current effect
+FadeIn (150);        // fade in current effect
 } 
 
 gPatterns[gCurrentPatternNumber]();
@@ -489,16 +489,15 @@ for (byte i=0; i<=steps; i++) {
 gPatterns[gCurrentPatternNumber]();
 byte fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
 FastLED.setBrightness(fadeOut);
-FastLED.show();  
+FastLED.delay(20);  
 }
 }
 
 void FadeIn (byte steps){
-byte fadeOut;
 for (byte i=steps+1; i--; i>=0) {
 gPatterns[gCurrentPatternNumber]();
-fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
+byte fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
 FastLED.setBrightness(fadeOut);
-FastLED.show();  
+FastLED.delay(20);  
 }
 }
