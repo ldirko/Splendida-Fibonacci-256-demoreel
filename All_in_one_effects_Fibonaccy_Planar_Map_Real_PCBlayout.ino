@@ -1,3 +1,36 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@ldirko 
+ldirko
+/
+Splendida-Fibonacci-256-demoreel
+2
+41
+Code
+Issues
+2
+Pull requests
+1
+Actions
+Projects
+Wiki
+Security
+Insights
+Settings
+Splendida-Fibonacci-256-demoreel/All_in_one_effects_Fibonaccy_Planar_Map_Real_PCBlayout.ino
+@ldirko
+ldirko Update All_in_one_effects_Fibonaccy_Planar_Map_Real_PCBlayout.ino
+Latest commit 9524f50 28 days ago
+ History
+ 1 contributor
+503 lines (408 sloc)  20.7 KB
+  
 //Fibonacci 256 demo effects compilation
 //fastled fibonacci 256 leds  demo
 //Yaroslaw Turbin 
@@ -29,9 +62,6 @@
 //added gamma correction table and gamma correction procedure. 
 //it need for effect like RGB_Caleidoscope1 for contrast looking in real leds, 
 //now gamma correction added for effects RGB_Caleidoscope1, RGB_Caleidoscope1 and Cilindrical_Pattern
-
-//02-05-2021
-//added SpriteScroll effect. This can be used for hand made CRGB sprites with cilindrical or spirals layouts 
 
 #include <FastLED.h>
 
@@ -122,7 +152,6 @@ static const uint8_t exp_gamma[256] PROGMEM = {
 255};
 
 const uint32_t sprite4 [] PROGMEM = {   //20x60
-
 0x000100, 0x000100, 0x000000, 0x000406, 0x000910, 0x002a36, 0x006c84, 0x0394a9, 0x1da9b8, 0x38c6d4, 0x1eaec6, 0x198eb1, 0x255d8c, 0x10214f, 0x04001f, 0x07000d, 0x010005, 0x000000, 0x000100, 0x000100, 0x000000, 0x000000, 0x010000, 0x000406, 0x000d15, 0x003542, 0x00738b, 0x0597ae, 0x24b0bf, 0x38c4d1, 0x1caac2, 0x1a88ab, 0x265485, 0x0f1644, 0x02001b, 0x05000c, 0x010004, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000508, 0x00101a, 0x004150, 0x007c92, 0x099bb2, 0x28b6c4, 0x38c1d1, 0x19a3bd, 0x1a82a7, 0x264a7e, 0x0b0c3c, 0x030015, 0x030007, 0x010002, 0x000000, 0x000000, 0x000000, 
 0x000100, 0x000102, 0x000304, 0x00090d, 0x002934, 0x147182, 0x1fa1b7, 0x2abfd5, 0x4ee1f1, 0x36c3d5, 0x24a4c1, 0x1c77a3, 0x1b3679, 0x21155f, 0x230648, 0x130026, 0x080013, 0x010007, 0x000002, 0x000100, 0x000000, 0x000002, 0x000305, 0x000911, 0x003543, 0x157a8c, 0x20a7bd, 0x2fc6db, 0x4fe2f2, 0x31bccf, 0x239fbb, 0x1b6d9c, 0x192c71, 0x24125c, 0x1f0340, 0x110023, 0x07000f, 0x010005, 0x000002, 0x000000, 0x000000, 0x000102, 0x000307, 0x000c15, 0x004350, 0x188395, 0x22aac0, 0x37cee3, 0x4bdef0, 0x2fb6cc, 0x2597b9, 0x196394, 0x1b256d, 0x270f5b, 0x1e013b, 0x0f001d, 0x07000d, 0x010004, 0x000002, 0x000000, 
 0x000100, 0x000304, 0x00070c, 0x002a35, 0x0b7b91, 0x1fadc5, 0x33ccde, 0x53f2ff, 0x32d7ed, 0x24b1cd, 0x2381a7, 0x143777, 0x452a93, 0x6522a3, 0x5c0f93, 0x41006a, 0x170031, 0x070014, 0x010007, 0x000002, 0x010000, 0x000305, 0x000913, 0x003646, 0x0f869e, 0x20b2cb, 0x38d3e7, 0x53f2ff, 0x2dcfe6, 0x22acc9, 0x2376a0, 0x132e73, 0x522e9c, 0x631da1, 0x5a0d8f, 0x3b0064, 0x130029, 0x050011, 0x010005, 0x000002, 0x010101, 0x000408, 0x000c15, 0x004453, 0x158fa6, 0x22b8d0, 0x3fdaee, 0x50efff, 0x2ac8e1, 0x22a2c5, 0x216798, 0x1a2873, 0x5a2fa2, 0x60199d, 0x550b88, 0x35005b, 0x110025, 0x05000d, 0x010005, 0x000002, 
@@ -143,19 +172,17 @@ const uint32_t sprite4 [] PROGMEM = {   //20x60
 0x000000, 0x010103, 0x010007, 0x0b001c, 0x250046, 0x480578, 0x5a1498, 0x5730a7, 0x1d3386, 0x2174aa, 0x22aed2, 0x28d0ea, 0x4ff8ff, 0x3ce1f5, 0x21bdd4, 0x118fa5, 0x004150, 0x000c14, 0x000406, 0x000000, 0x000100, 0x010005, 0x030009, 0x0c001d, 0x2c0050, 0x4e0980, 0x5a1999, 0x5133a3, 0x163a84, 0x2281af, 0x21b4d6, 0x2dd9f1, 0x54faff, 0x38d9ed, 0x21b7d0, 0x0f869c, 0x003341, 0x000b10, 0x000305, 0x000000, 0x000000, 0x020005, 0x03000b, 0x0f0022, 0x340058, 0x530b88, 0x5a1b9d, 0x4b33a1, 0x144387, 0x228cb6, 0x23bad9, 0x35e1f9, 0x50f9ff, 0x30d1e5, 0x1eb0c9, 0x0b7b91, 0x002732, 0x00080c, 0x000204, 0x000000, 
 0x000000, 0x000000, 0x000002, 0x04000a, 0x0a0017, 0x10002f, 0x1c0f57, 0x132b75, 0x1677ae, 0x22b0d6, 0x2ecee6, 0x4ef9ff, 0x34e2fb, 0x21bdd6, 0x1b8ea1, 0x004351, 0x000b14, 0x000406, 0x000102, 0x000000, 0x000000, 0x000002, 0x010004, 0x04000b, 0x0c001a, 0x140037, 0x1b135c, 0x13357c, 0x1983b5, 0x23b8d9, 0x34d6ed, 0x50fbff, 0x30dbf5, 0x22b8d1, 0x188397, 0x003543, 0x000911, 0x000406, 0x000102, 0x000000, 0x000000, 0x000000, 0x010004, 0x04000c, 0x0c001d, 0x16033b, 0x17175f, 0x144185, 0x1d8dbd, 0x24bddd, 0x38ddf3, 0x4ffaff, 0x29d3ec, 0x1db2ca, 0x14778a, 0x002833, 0x00090d, 0x000305, 0x000002, 0x000000, 
 0x000000, 0x000000, 0x000000, 0x000002, 0x010004, 0x000012, 0x091642, 0x306a9c, 0x28add6, 0x26d1ef, 0x4ef7ff, 0x38e3f5, 0x14c3de, 0x0198b3, 0x004b5d, 0x001019, 0x00050a, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000002, 0x030007, 0x000015, 0x0e234e, 0x3377a8, 0x26b4da, 0x29d8f5, 0x4ffaff, 0x31dced, 0x11bfda, 0x008faa, 0x003c4d, 0x000c14, 0x000407, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000002, 0x030009, 0x000119, 0x14335f, 0x3482b2, 0x27b9e0, 0x30e2fe, 0x4ef9ff, 0x2bd5e6, 0x0eb9d5, 0x0085a0, 0x002d3b, 0x000910, 0x000305, 0x000000, 0x000000, 0x000000
-
-
 };
 
 uint8_t gCurrentPatternNumber =0; // Index number of which pattern is current
 uint8_t InitNeeded = 1;           //global variable for effects initial needed
-byte BRIGHTNESS = 255;             // for me good bright about 100-120, don't turn leds in full brightness long time! it may overheat
+byte BRIGHTNESS = 110;      // for me good bright about 100-120, don't turn leds in full brightness long time! it may overheat
 
 
 void setup() {
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, 256)
   .setCorrection( TypicalLEDStrip );
-//   FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
+  FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
 }
@@ -165,7 +192,7 @@ void setup() {
 typedef void (*SimplePatternList[])();
 SimplePatternList gPatterns =     // this is list of patterns
 {
-SpriteScroll,   
+SpriteScroll,  
 Fire2021_Cilindrical, CilindricalSwirl, RGB_Caleidoscope2, RGB_Caleidoscope1,
 Fire_Tunnel, Cilindrical_Pattern, DiagonalPatternCilindr, FireButterfly,     
 Spirals_Swirl,
@@ -175,12 +202,12 @@ DiagonalPattern
 }; 
 
 void loop() {
-EVERY_N_SECONDS( 15 ) // speed of change patterns periodically
+EVERY_N_SECONDS( 30 ) // speed of change patterns periodically
 {
-FadeOut (50);        // fade out current effect
+FadeOut (150);        // fade out current effect
 gCurrentPatternNumber = (gCurrentPatternNumber + 1) % ARRAY_SIZE(gPatterns); //next effect
 InitNeeded=1; //flag if init something need
-FadeIn (50);        // fade in current effect
+FadeIn (150);        // fade in current effect
 } 
 
 gPatterns[gCurrentPatternNumber]();
@@ -189,7 +216,6 @@ FastLED.show();
 } // main cycle
 
 //_____________________________________ effects for cilindrical layout
-
 
 //Sprite scroll_____________________________________
 void SpriteScroll() {  
@@ -214,7 +240,6 @@ delay(60);
 // GammaCorrection();
 a+=0.5;
 }
-
 
 //CilindricalSwirl_____________________________________
 
@@ -274,7 +299,7 @@ for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
       uint16_t index = XY_fibon_cilindr(i,j);
 if (index!=256) leds[index].setHue ((sin8((i<<4)+a)>>1)+(sin8((j<<4)+a))>>1);
 }}
-// GammaCorrection();
+GammaCorrection();
 }
 
 //Fire_Tunnel_____________________________________
@@ -300,7 +325,7 @@ for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
 if (index!=256) 
 leds[index].setRGB( (sin8(i*16+a)+cos8(j*16+a/2))/2, sin8(j*16+a/2+sin8(leds[index].r+a)/16), cos8(i*16+j*16-a/2+leds[index].g));
 }}
-// GammaCorrection();
+GammaCorrection();
 }
 
 //RGB_Caleidoscope2_____________________________________
@@ -314,7 +339,7 @@ for (int j = 0; j < NUM_ROWS_CILINDR; j++) {
 if (index!=256)
 leds[index].setRGB((sin8(i*32+a)+cos8(j*32+a))>>1,(sin8(i*32-a)+cos8(j*32+a>>1))>>1,sin8(j*16+a));
 }}
-// GammaCorrection();
+GammaCorrection();
 }
 
 //_____________________________________ effects for spirals layout
@@ -545,16 +570,28 @@ for (byte i=0; i<=steps; i++) {
 gPatterns[gCurrentPatternNumber]();
 byte fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
 FastLED.setBrightness(fadeOut);
-FastLED.show();  
+FastLED.delay(20);  
 }
 }
 
 void FadeIn (byte steps){
-byte fadeOut;
 for (byte i=steps+1; i--; i>=0) {
 gPatterns[gCurrentPatternNumber]();
- fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
+byte fadeOut = lerp8by8 (BRIGHTNESS, 0, 255*i/steps);
 FastLED.setBrightness(fadeOut);
-FastLED.show();  
+FastLED.delay(20);  
 }
 }
+© 2021 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Loading complete
