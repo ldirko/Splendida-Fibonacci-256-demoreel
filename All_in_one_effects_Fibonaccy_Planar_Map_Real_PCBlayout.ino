@@ -165,6 +165,7 @@ void setup() {
   FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);   
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.clear();
+  FadeIn (150); 
 }
 
 #define ARRAY_SIZE(A) (sizeof(A) / sizeof((A)[0]))
